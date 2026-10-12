@@ -1,0 +1,101 @@
+H3 REFERENCE DIRECTOR - WORKFLOW 01 v2.0 - MODEL DOWNLOAD COMMANDS FOR RUNPOD
+=============================================================================
+
+The installer downloads only one model file: the 10 MB live-preview decoder
+(taeh3). Everything else is listed here: the same files and links as
+H3_Reference_Director_01_v2.0_MODELS.pdf, written as commands you paste into
+the RunPod terminal yourself. Paste only the ones you need.
+
+  - Paste STEP 0 first, in every new terminal. It sets the models folder that
+    the other commands use.
+  - Each command resumes an interrupted download (wget -c). If one stops,
+    paste it again. Never rename a half-finished file.
+  - When you are done, run the installer again. Its model check compares
+    every file with the size Hugging Face lists and reports complete,
+    missing or damaged.
+  - If a download answers "401 Unauthorized", that repository wants you to be
+    logged in: accept its terms on huggingface.co, create a read token, and
+    add  --header="Authorization: Bearer hf_YOUR_TOKEN"  after "wget -c".
+
+
+STEP 0 - paste this first
+-------------------------
+M=/workspace/runpod-slim/ComfyUI/models
+[ -d /workspace/runpod-slim/ComfyUI ] || M=/workspace/ComfyUI/models
+mkdir -p "$M/diffusion_models" "$M/text_encoders" "$M/vae" "$M/loras" "$M/latent_upscale_models" "$M/ultralytics/bbox" "$M/vae_approx"
+echo "Models folder: $M"
+
+
+1. REQUIRED - the workflow does not run without these (about 42 GB)
+--------------------------------------------------------------------
+# Base model, Singularity v1.3 (about 21 GB)
+wget -c -O "$M/diffusion_models/Minimax-h3_Singularity_ref2va_Pruned_v1.3_int8.safetensors" "https://huggingface.co/WarmBloodAban/Minimax-h3_Singularity/resolve/main/Minimax-h3_Singularity_ref2va_Pruned_v1.3_int8.safetensors"
+
+# Text encoder (about 15 GB)
+wget -c -O "$M/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors" "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+
+# Video VAE (about 5 GB)
+wget -c -O "$M/vae/minimax_h3_video_vae_fp16.safetensors" "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors"
+
+# Audio VAE (about 0.6 GB)
+wget -c -O "$M/vae/minimax_h3_audio_vae_fp32.safetensors" "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors"
+
+
+2. SPEED MODE - turbo LoRAs (only for TURBO 8-step / TURBO 4-step, Group 04)
+-----------------------------------------------------------------------------
+# Turbo 8-step (about 1.9 GB)
+wget -c -O "$M/loras/minimax_h3_ref2v_turbo_8step_v1.0_768p_comfyui_bf16.safetensors" "https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/main/minimax_h3_ref2v_turbo_8step_v1.0_768p_comfyui_bf16.safetensors"
+
+# Turbo 4-step (about 1.9 GB)
+wget -c -O "$M/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors" "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors"
+
+
+3. LORA STACK - only for the LoRAs you switch on
+-------------------------------------------------
+# fal Realism People (about 125 MB)
+wget -c -O "$M/loras/h3-realism-people-t2v-i2v-r2v.safetensors" "https://huggingface.co/fal/MiniMax-H3-Realism-People-LoRA/resolve/main/h3-realism-people-t2v-i2v-r2v.safetensors"
+
+# Motion Continuity Repair (about 155 MB)
+wget -c -O "$M/loras/Motion_Repair_V2.safetensors" "https://huggingface.co/JOKER141/MiniMax-H3-General-Motion-Continuity-Repair/resolve/main/Motion_Repair_V2.safetensors"
+
+# Spatial Physics (about 155 MB)
+wget -c -O "$M/loras/wushu_spatial_physics_clean_3000_pruned.safetensors" "https://huggingface.co/Jojocodex/minimax-h3-spatial-physics-lora/resolve/main/wushu_spatial_physics_clean_3000_pruned.safetensors"
+
+# LMS Sharpness (about 1.2 GB)
+wget -c -O "$M/loras/minimax_h3_lms_v1.0_r64.safetensors" "https://huggingface.co/Alissonerdx/Minimax-H3-ComfyUI/resolve/main/loras/minimax_h3_lms_v1.0_r64.safetensors"
+
+
+4. FEATURE MODELS
+-----------------
+# Latent upscaler, Group 07 (about 0.7 GB)
+wget -c -O "$M/latent_upscale_models/minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors" "https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler/resolve/main/minimax_h3_latent_upscaler_3d_conv_v1/minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors"
+
+# Face detector, Group 08 (about 50 MB)
+wget -c -O "$M/ultralytics/bbox/face_yolov8m.pt" "https://huggingface.co/Bingsu/adetailer/resolve/main/face_yolov8m.pt"
+
+# Live preview decoder, Group 04 (about 10 MB) - NOTHING TO DO.
+# The installer downloads this file for you and checks its SHA-256.
+# Only if the installer reported that it could not download it, paste this:
+wget -c -O "$M/vae_approx/taeh3.safetensors" "https://huggingface.co/Kijai/MiniMax-H3-TAE/resolve/a213ac8bf2f148b4f32372279a7f207846978900/vae_approx/taeh3.safetensors"
+
+
+5. OPTIONAL ALTERNATIVES - not needed; other choices for a dropdown
+--------------------------------------------------------------------
+# Base model: the official Ref2VA, the Version 1 model (about 20 GB)
+wget -c -O "$M/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors" "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors"
+
+# Video VAE: a faster int8 version (about 3 GB)
+wget -c -O "$M/vae/minimax_h3_video_vae_int8_convrot.safetensors" "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_int8_convrot.safetensors"
+
+# Base model: H3 x Z-Image graft (about 21 GB). Open its Files page:
+#     https://huggingface.co/Darkbluu/MiniMax-H3-x-Z-Image-Graft/tree/main
+# copy the link of MiniMax-H3-ref2va-pruned-zs05-comfy-int8.safetensors, then:
+wget -c -O "$M/diffusion_models/MiniMax-H3-ref2va-pruned-zs05-comfy-int8.safetensors" "PASTE_THE_LINK_HERE"
+
+
+AFTER DOWNLOADING
+-----------------
+Run the installer again; it only checks, it changes nothing:
+  cd /workspace/H3_REFERENCE_DIRECTOR_01_V2_RUNPOD_DISTRIBUTION
+  ./INSTALL_H3_REFERENCE_DIRECTOR_V2_RUNPOD.sh
+If ComfyUI is already open, press R in ComfyUI so the dropdowns refresh.
