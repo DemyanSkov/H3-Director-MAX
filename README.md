@@ -1,16 +1,16 @@
-# H3 Reference Director 01 v2 — custom nodes for RunPod
+# H3 Reference Director 01 v2 — custom nodes
 
-This repository contains the custom node pack and RunPod installer for **H3 Reference Director 01 v2**. The workflow JSON is distributed separately.
+This repository contains the custom node pack and installer for **H3 Reference Director 01 v2**. The workflow JSON is distributed separately.
 
-## Install on RunPod
+## Installation
 
-For a new pod where ComfyUI is at `/work/ComfyUI` and its Python is `/work/ai/venv/bin/python`, run this in a **bash** terminal:
+For a system where ComfyUI is at `/work/ComfyUI` and its Python is `/work/ai/venv/bin/python`, run this in a **bash** terminal:
 
 ```bash
 git clone https://github.com/DemyanSkov/H3-Director-MAX.git /work/H3-Director-MAX && H3_COMFY_ROOT=/work/ComfyUI H3_PYTHON=/work/ai/venv/bin/python bash /work/H3-Director-MAX/H3_REFERENCE_DIRECTOR_01_V2_RUNPOD_DISTRIBUTION/INSTALL_H3_REFERENCE_DIRECTOR_V2_RUNPOD.sh
 ```
 
-`git clone` only downloads the repository; the `bash` portion runs the installer. If your pod uses different paths, change `H3_COMFY_ROOT` and `H3_PYTHON` to the actual ComfyUI directory and Python executable. Restart ComfyUI after installation, then load your separately supplied `H3_Reference_Director_01_v2.0.json` in its UI.
+`git clone` only downloads the repository; the `bash` portion runs the installer. If your system uses different paths, change `H3_COMFY_ROOT` and `H3_PYTHON` to the actual ComfyUI directory and Python executable. Restart ComfyUI after installation, then load your separately supplied `H3_Reference_Director_01_v2.0.json` in its UI.
 
 The installer installs/checks the custom nodes and dependencies, but **does not download the main model weights**. Use `H3_Reference_Director_01_v2.0_MODELS.pdf` and `MODEL_DOWNLOAD_COMMANDS_RUNPOD.txt` for those files. It needs internet access for upstream dependencies.
 
@@ -18,7 +18,7 @@ The installer installs/checks the custom nodes and dependencies, but **does not 
 
 - `H3_REFERENCE_DIRECTOR_01_V2_RUNPOD_DISTRIBUTION/ComfyUI-H3-ExactMasterMemory_v0.10.1.zip`: the custom node pack used by the installer. **Keep this ZIP beside the installer**; the script verifies its SHA-256 before installation.
 - `custom_nodes/ComfyUI-H3-ExactMasterMemory/`: inspectable source extracted from that same ZIP. The installer uses the verified ZIP, not this copy.
-- RunPod installer, model list, and model download instructions. The workflow JSON is not included.
+- Installation script, model list, and model download instructions. The workflow JSON is not included.
 
 **No third-party node source is hosted in this repository.** To make the workflow usable, the installer downloads its other required and optional node packs directly from their upstream GitHub repositories at pinned commits. It does not download those packs from this repository. SageAttention is a Python/CUDA dependency, not a ComfyUI node; the installer builds/tests it when needed.
 
